@@ -1,5 +1,7 @@
 # AlumSphere
 
+[![E2E tests](https://github.com/priyanshu3027/AlumSphere/actions/workflows/e2e.yml/badge.svg)](https://github.com/priyanshu3027/AlumSphere/actions/workflows/e2e.yml)
+
 An AI-powered alumni networking and placement platform. Students and alumni build connections, message each other in real time, share jobs and events, and get AI help with their careers: resume analysis, career roadmaps and job recommendations.
 
 **Stack:** React 19 (Vite, Tailwind CSS) · Node.js · Express 5 · MongoDB (Mongoose) · Socket.io · JWT · OpenAI and Gemini APIs
@@ -140,6 +142,8 @@ npx playwright show-report   # open the HTML report
 ```
 
 Set `E2E_BASE_URL` to run the suite against a different deployment.
+
+GitHub Actions runs the same steps (build the stack, seed, run Playwright) on every push to `main` and on every pull request, and uploads the HTML report as an artifact.
 
 ## Roadmap
 
