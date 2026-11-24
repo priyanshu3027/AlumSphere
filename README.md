@@ -43,6 +43,9 @@ frontend/
   src/components/  shared UI components
   src/context/     auth and socket providers
   src/api/         Axios client
+  Dockerfile       multi-stage build, served by Nginx
+e2e/               Playwright end-to-end tests
+docker-compose.yml MongoDB + API + frontend
 ```
 
 ## API overview
@@ -103,12 +106,45 @@ npm run seed      # optional: load sample data
 npm run dev:all   # API on port 5000, Vite dev server on port 5173
 ```
 
+## Run with Docker
+
+The whole stack (MongoDB, the API, and the React build served by Nginx) starts with one command:
+
+```bash
+docker compose up -d --build --wait
+docker compose exec -T backend npm run seed   # optional: demo accounts and sample data
+```
+
+Open http://localhost:8080. Nginx serves the frontend and proxies `/api`, `/uploads` and `/socket.io` to the backend, so the browser only talks to one origin.
+
+After seeding, the login page's quick-demo buttons work (student, verified alumni and admin). AI features return built-in sample responses unless `OPENAI_API_KEY` or `GEMINI_API_KEY` is set in your shell before starting the stack.
+
+Stop everything with `docker compose down` (add `-v` to also delete the database volume).
+
+## End-to-end tests
+
+The `e2e/` folder holds a Playwright suite of 27 tests that runs against the seeded Docker stack:
+
+- **Smoke:** API health, landing page, JSON 404 for unknown API routes
+- **Authentication:** redirect for signed-out visitors, registration, duplicate email, wrong password, sign in and sign out
+- **Navigation:** every sidebar page renders inside the app shell with no uncaught browser errors
+- **Jobs:** listing, search, a verified alumni posting a job, a student applying with a cover letter
+- **Permissions:** students and unverified alumni cannot post jobs, students cannot reach the admin API
+
+```bash
+cd e2e
+npm ci
+npx playwright install chromium
+npx playwright test          # expects the stack on http://localhost:8080
+npx playwright show-report   # open the HTML report
+```
+
+Set `E2E_BASE_URL` to run the suite against a different deployment.
+
 ## Roadmap
 
-- End-to-end tests with Playwright
-- Docker Compose setup
-- GitHub Actions CI
 - Hosted live demo
+- Unit tests for the API controllers
 
 ## Author
 

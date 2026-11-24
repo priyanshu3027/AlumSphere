@@ -17,7 +17,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // A 401 from the sign-in endpoints means wrong credentials, not an expired
+    // session. Let the form show its own error instead of reloading the page.
+    const isAuthAttempt = /\/auth\/(login|register|verify-2fa)$/.test(error.config?.url || '');
+    if (error.response?.status === 401 && !isAuthAttempt) {
       localStorage.removeItem('alumsphere_token');
       localStorage.removeItem('alumsphere_user');
       window.location.href = '/login';

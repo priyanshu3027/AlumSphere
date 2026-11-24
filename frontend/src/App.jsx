@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
@@ -112,9 +112,13 @@ function LoadingScreen() {
   );
 }
 
+/* Theme state lives in App; the layout below reads it through context. */
+const ThemeContext = createContext({ theme: 'light', toggleTheme: () => {} });
+
 /* ── Protected Layout (3-column) ─────────────────────── */
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   if (loading) return <LoadingScreen />;
@@ -210,6 +214,7 @@ function App() {
   };
 
   return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
     <Router>
       <AuthProvider>
         <SocketProvider>
@@ -261,6 +266,7 @@ function App() {
         </SocketProvider>
       </AuthProvider>
     </Router>
+    </ThemeContext.Provider>
   );
 }
 

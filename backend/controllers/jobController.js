@@ -9,7 +9,11 @@ const getJobs = async (req, res) => {
   try {
     const { q, location, skills, type, minSalary, maxSalary, page = 1, limit = 12 } = req.query;
     const filter = { isActive: true };
-    if (q) filter.$or = [{ title: { $regex: q, $options: 'i' } }, { company: { $regex: q, $options: 'i' } }, { description: { $regex: q, $options: 'i' } }];
+    if (q) {
+      // Treat the search text literally so characters like "+" or "(" cannot break the query.
+      const term = String(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.$or = ['title', 'company', 'description', 'skills'].map(field => ({ [field]: { $regex: term, $options: 'i' } }));
+    }
     if (location) filter.location = { $regex: location, $options: 'i' };
     if (type) filter.type = type;
     if (skills) { const sk = skills.split(',').map(s => s.trim()); filter.skills = { $in: sk.map(s => new RegExp(s, 'i')) }; }
