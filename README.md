@@ -1,282 +1,115 @@
-# AlumSphere – Smart Alumni Networking & Placement Portal
+# AlumSphere
 
-````markdown
-# 🎓 AlumSphere – Smart Alumni Networking & Placement Portal
+An AI-powered alumni networking and placement platform. Students and alumni build connections, message each other in real time, share jobs and events, and get AI help with their careers: resume analysis, career roadmaps and job recommendations.
 
-AlumSphere is a modern AI-powered alumni networking and placement platform designed to bridge the gap between students, alumni, mentors, and recruiters. The platform enables meaningful professional connections, mentorship opportunities, job referrals, real-time communication, and career guidance through intelligent recommendation systems.
+**Stack:** React 19 (Vite, Tailwind CSS) · Node.js · Express 5 · MongoDB (Mongoose) · Socket.io · JWT · OpenAI and Gemini APIs
 
-Built using the MERN Stack with real-time communication capabilities and AI-powered features, AlumSphere creates a collaborative ecosystem where students can interact with experienced alumni and accelerate their career growth.
+## Features
 
----
+- **Authentication and access control:** JWT authentication, role-based access for students, alumni and admins, alumni verification status, and TOTP two-factor authentication.
+- **Networking:** profiles, connection requests and AI-suggested connections.
+- **Real-time chat:** one-to-one messaging over Socket.io with typing indicators, plus in-app notifications.
+- **Jobs and placements:** job postings, applications, saved jobs and a job-match score.
+- **Community:** posts feed with likes and comments, groups, events and announcements.
+- **AI Hub:** career chatbot, resume analysis from an uploaded PDF, job recommendations, career roadmap generation, skill trends and market insights.
+- **Gamification:** points and a leaderboard.
+- **Admin dashboard:** platform stats, alumni verification and user management.
 
-## 🚀 Features
-
-### 🔐 Authentication & Authorization
-- Secure JWT-based authentication
-- Role-based access control
-- Student, Alumni, Recruiter, and Admin roles
-- Protected routes and API security
-
-### 👥 Alumni Networking
-- Alumni directory with advanced search
-- Profile creation and management
-- Connection requests and networking
-- Professional experience showcase
-
-### 💬 Real-Time Communication
-- One-to-one messaging
-- Real-time chat using Socket.IO
-- Online/offline status tracking
-- Typing indicators
-- Instant notifications
-
-### 🎯 Placement & Career Support
-- Job posting and management
-- Internship opportunities
-- Referral requests
-- Career guidance system
-
-### 🤖 AI-Powered Features
-- ATS Resume Analyzer
-- Smart Job Recommendation Engine
-- Personalized Career Roadmap Generator
-- Skill Gap Analysis
-- AI Career Assistance
-
-### 📊 Analytics Dashboard
-- User engagement analytics
-- Placement statistics
-- Alumni participation metrics
-- Career growth insights
-- Interactive data visualization
-
-### 📅 Community & Events
-- Alumni events management
-- Community discussions
-- Professional networking sessions
-- Mentorship programs
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-- React.js
-- Vite
-- Tailwind CSS
-- React Router
-- Axios
-- Recharts
-- Socket.IO Client
-
-### Backend
-- Node.js
-- Express.js
-- RESTful APIs
-- JWT Authentication
-- Socket.IO
-
-### Database
-- MongoDB Atlas
-- Mongoose ODM
-
-### AI & Intelligence
-- OpenAI API
-- Google Gemini API
-
-### Development Tools
-- Git & GitHub
-- Postman
-- VS Code
-
----
-
-## 🏗️ System Architecture
+## Architecture
 
 ```text
-Frontend (React + Vite)
-        │
-        ▼
-REST APIs + Socket.IO
-        │
-        ▼
-Backend (Node.js + Express)
-        │
-        ▼
-MongoDB Atlas Database
-        │
-        ▼
-AI Services (OpenAI + Gemini)
-````
-
----
-
-## 📂 Project Structure
-
-```bash
-AlumSphere/
-│
-├── client/
-│   ├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── hooks/
-│   └── services/
-│
-├── server/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── config/
-│   └── sockets/
-│
-├── public/
-├── docs/
-└── README.md
+React SPA (Vite)
+      │  REST (Axios) + Socket.io
+      ▼
+Express API  ──►  MongoDB (Mongoose)
+      │
+      ▼
+AI services (OpenAI, Gemini)
 ```
 
----
+## Project structure
 
-## ⚡ Installation
-
-### Clone Repository
-
-```bash
-git clone https://github.com/yourusername/alumsphere.git
-cd alumsphere
+```text
+backend/
+  config/        MongoDB connection
+  controllers/   13 controllers (auth, users, jobs, events, chat, AI, admin, ...)
+  middleware/    JWT auth, error handler, file upload
+  models/        10 Mongoose models
+  routes/        13 route modules mounted under /api
+  seed/          sample data script
+  server.js      Express and Socket.io entry point
+frontend/
+  src/pages/       14 pages (Dashboard, Network, Chat, Jobs, Events, AI Hub, Admin, ...)
+  src/components/  shared UI components
+  src/context/     auth and socket providers
+  src/api/         Axios client
 ```
 
-### Install Dependencies
+## API overview
 
-#### Frontend
+The backend exposes 70+ REST endpoints across 13 route modules.
+
+| Base path | Area |
+|---|---|
+| `/api/auth` | Registration, login, two-factor authentication |
+| `/api/users` | Profiles and user directory |
+| `/api/connections` | Connection requests |
+| `/api/chat` | Conversations and messages |
+| `/api/notifications` | In-app notifications |
+| `/api/jobs` | Job postings and applications |
+| `/api/events` | Events |
+| `/api/community` | Groups |
+| `/api/posts` | Posts feed |
+| `/api/announcements` | Announcements |
+| `/api/gamification` | Points and leaderboard |
+| `/api/ai` | Chatbot, resume analysis, recommendations, roadmap, insights |
+| `/api/admin` | Admin operations |
+
+## Getting started
+
+You need Node.js 18 or newer and a MongoDB instance (local or Atlas).
 
 ```bash
-cd client
-npm install
+git clone https://github.com/priyanshu3027/AlumSphere.git
+cd AlumSphere
+cd backend && npm install
+cd ../frontend && npm install
 ```
 
-#### Backend
-
-```bash
-cd server
-npm install
-```
-
-### Configure Environment Variables
-
-Create `.env` file inside server directory:
+Create `backend/.env`:
 
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-
-OPENAI_API_KEY=your_openai_key
-GEMINI_API_KEY=your_gemini_key
+NODE_ENV=development
+MONGO_URI=mongodb://localhost:27017/alumsphere
+JWT_SECRET=replace-with-a-long-random-string
+JWT_EXPIRE=7d
+CLIENT_URL=http://localhost:5173
+OPENAI_API_KEY=
+GEMINI_API_KEY=
 ```
 
-### Start Development Server
+Create `frontend/.env` so the client talks to your local API:
 
-Backend:
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+Run the app:
 
 ```bash
-npm run dev
+cd backend
+npm run seed      # optional: load sample data
+npm run dev:all   # API on port 5000, Vite dev server on port 5173
 ```
 
-Frontend:
+## Roadmap
 
-```bash
-npm run dev
-```
+- End-to-end tests with Playwright
+- Docker Compose setup
+- GitHub Actions CI
+- Hosted live demo
 
----
+## Author
 
-## 🎯 Key Highlights
-
-* Full-Stack MERN Application
-* Real-Time Communication System
-* AI-Powered Career Assistance
-* Scalable REST API Architecture
-* Secure Authentication & Authorization
-* Responsive Modern UI/UX
-* Data Visualization & Analytics
-* Industry-Oriented Project Design
-
----
-
-## 💡 Problem Statement
-
-Students often struggle to connect with alumni, seek career guidance, and obtain professional referrals. Existing solutions lack intelligent networking and personalized career support.
-
-AlumSphere solves this challenge by creating a centralized platform that combines alumni networking, mentorship, placement assistance, and AI-powered career development tools.
-
----
-
-## 📈 Future Enhancements
-
-* Video Calling & Virtual Mentorship
-* AI Interview Preparation Assistant
-* Resume Builder
-* Blockchain-based Alumni Verification
-* Mobile Application (React Native)
-* Advanced Recommendation Algorithms
-* Campus Recruitment Portal Integration
-
----
-
-## 👨‍💻 Developer
-
-### Priyanshu Singh
-
-MCA Graduate | Full Stack Developer | Data Analytics Enthusiast
-
-**Skills Demonstrated Through This Project:**
-
-* MERN Stack Development
-* REST API Design
-* Authentication & Security
-* Real-Time Systems (Socket.IO)
-* Database Design & Optimization
-* AI Integration
-* State Management
-* Data Visualization
-* Software Architecture
-* Responsive UI/UX Development
-
----
-
-## ⭐ Project Impact
-
-AlumSphere demonstrates the development of an enterprise-level networking platform capable of connecting students and alumni while leveraging AI to improve career opportunities and engagement.
-
-If you found this project valuable, consider giving it a ⭐ on GitHub.
-
-````
-
-### GitHub Repository Description (Short)
-
-**AI-Powered Alumni Networking & Placement Portal built using MERN Stack, Socket.IO, MongoDB, JWT Authentication, and AI integrations for mentorship, job referrals, resume analysis, and career guidance. 🚀**
-
-### GitHub Topics
-
-```text
-mern-stack
-reactjs
-nodejs
-expressjs
-mongodb
-socketio
-jwt-authentication
-tailwindcss
-ai
-openai
-gemini
-full-stack-project
-career-platform
-placement-portal
-alumni-network
-realtime-chat
-````
-
-Ye README recruiter ko dekhte hi ye feel dega ki project sirf CRUD app nahi hai balki enterprise-level MERN + AI + Real-Time Communication platform hai, jo MCA fresher ke liye kaafi strong impression create karega.
+Priyanshu Singh · [LinkedIn](https://www.linkedin.com/in/priyanshu-singh-2672912a5/) · [Portfolio](https://priyanshucodez.netlify.app)
