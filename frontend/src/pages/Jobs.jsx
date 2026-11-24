@@ -59,7 +59,7 @@ export default function Jobs() {
       setLoading(true);
       const params = {};
       if (filterType !== 'all') params.type = filterType;
-      if (searchTerm) params.search = searchTerm;
+      if (searchTerm) params.q = searchTerm;
       
       const res = await api.get('/jobs', { params });
       setJobs(res.data.jobs);
